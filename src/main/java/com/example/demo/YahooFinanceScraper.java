@@ -95,12 +95,21 @@ public class YahooFinanceScraper {
         }
     }
 
+    // Helper methods to safely parse doubles and integers
     private static double parseDouble(String value) {
-        return value.isEmpty() ? 0.0 : Double.parseDouble(value);
+        try {
+            return value.isEmpty() ? 0.0 : Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return 0.0;
+        }
     }
 
     private static int parseInt(String value) {
-        return value.isEmpty() ? 0 : Integer.parseInt(value);
+        try {
+            return value.isEmpty() ? 0 : Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     // Helper method to insert the data into the SQLite database
@@ -120,8 +129,6 @@ public class YahooFinanceScraper {
         }
     }
 
-
-
     // Display data from the SQLite database
     private static void displayData(Connection conn) throws SQLException {
         String query = "SELECT * FROM HistoricalData";
@@ -130,7 +137,7 @@ public class YahooFinanceScraper {
             System.out.println("Historical Data:");
             while (rs.next()) {
                 String date = rs.getString("Date");
-                String  open = rs.getString("Open");
+                double open = rs.getDouble("Open");
                 double high = rs.getDouble("High");
                 double low = rs.getDouble("Low");
                 double close = rs.getDouble("Close");

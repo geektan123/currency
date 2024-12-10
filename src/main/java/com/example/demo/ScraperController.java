@@ -74,7 +74,7 @@ public class ScraperController {
             return scrapeForTimeRange(quote, 30); // 30 days for 1 month
         } catch (IOException e) {
             throw new RuntimeException("Error fetching data for " + quote + " for the last 1 month", e);
-        }
+        }git
     }
 
     /**

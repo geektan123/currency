@@ -1,7 +1,7 @@
 package com.example.demo;
 
-
 public class HistoricalData {
+
     private String date;
     private double open;
     private double high;
@@ -10,7 +10,8 @@ public class HistoricalData {
     private double adjClose;
     private int volume;
 
-    // Getters and setters
+    // Getters and Setters
+
     public String getDate() {
         return date;
     }
@@ -65,5 +66,18 @@ public class HistoricalData {
 
     public void setVolume(int volume) {
         this.volume = volume;
+    }
+
+    @Override
+    public String toString() {
+        return "HistoricalData{" +
+                "date='" + date + '\'' +
+                ", open=" + open +
+                ", high=" + high +
+                ", low=" + low +
+                ", close=" + close +
+                ", adjClose=" + adjClose +
+                ", volume=" + volume +
+                '}';
     }
 }

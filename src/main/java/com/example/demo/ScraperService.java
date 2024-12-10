@@ -1,7 +1,5 @@
 package com.example.demo;
 
-import com.example.demo.HistoricalData;
-import com.example.demo.HistoricalData;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,14 +14,17 @@ import java.util.List;
 public class ScraperService {
 
     public List<HistoricalData> scrapeData(String quote, String fromDate, String toDate) throws IOException {
-        String url = "https://finance.yahoo.com/quote/" + quote + "/history/?period1=" + fromDate + "&period2=" + toDate;
+        String url = "https://finance.yahoo.com/quote/" + quote+"=X" + "/history/?period1=" + fromDate + "&period2=" + toDate;
+
         Document doc = Jsoup.connect(url).get();
         Elements rows = doc.select("div.table-container.yf-j5d1ld table tbody tr");
-         System.out.println(url);
+
+        System.out.println("Scraping URL: " + url);
+
         List<HistoricalData> dataList = new ArrayList<>();
         for (Element row : rows) {
             Elements columns = row.select("td");
-            if (columns.size() == 7) {
+            if (columns.size() == 7) { // Ensure the row has the correct number of columns
                 try {
                     HistoricalData data = new HistoricalData();
                     data.setDate(columns.get(0).text().trim());
@@ -35,7 +36,8 @@ public class ScraperService {
                     data.setVolume(parseInt(columns.get(6).text().replace(",", "").trim()));
 
                     dataList.add(data);
-                } catch (NumberFormatException ignored) {
+                } catch (NumberFormatException e) {
+                    System.err.println("Skipping invalid row due to parsing error: " + e.getMessage());
                 }
             }
         }

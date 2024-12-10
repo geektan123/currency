@@ -29,7 +29,6 @@ dependencies {
 
 	// Add these new dependencies for jsoup and SQLite JDBC
 	implementation 'org.jsoup:jsoup:1.18.3'
-	implementation 'org.xerial:sqlite-jdbc:3.36.0.3'  // For SQLite database interaction
 }
 
 

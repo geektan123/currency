@@ -9,15 +9,20 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class ScraperService {
 
     public List<HistoricalData> scrapeData(String quote, String fromDate, String toDate) throws IOException {
-        String url = "https://finance.yahoo.com/quote/" + quote + "/history/?period1=" + fromDate + "&period2=" + toDate;
-        Document doc = Jsoup.connect(url).get();
+        long fromTimestamp = convertToUnixTimestamp(fromDate);
+        long toTimestamp = convertToUnixTimestamp(toDate);
+
+        String url = "https://finance.yahoo.com/quote/" + quote + "/history/?period1=" + fromTimestamp + "&period2=" + toTimestamp;        Document doc = Jsoup.connect(url).get();
         Elements rows = doc.select("div.table-container.yf-j5d1ld table tbody tr");
          System.out.println(url);
         List<HistoricalData> dataList = new ArrayList<>();
@@ -41,7 +46,15 @@ public class ScraperService {
         }
         return dataList;
     }
-
+    private long convertToUnixTimestamp(String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date parsedDate = dateFormat.parse(date);
+            return parsedDate.getTime() / 1000;
+        } catch (ParseException e) {
+            throw new RuntimeException("Invalid date format. Please use yyyy-MM-dd.", e);
+        }
+    }
     private double parseDouble(String value) {
         try {
             return Double.parseDouble(value);

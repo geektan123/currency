@@ -108,8 +108,10 @@ Here is an example of the data that can be returned by the API for the `GBPINR` 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/currency-scraping-sync.git
-cd currency-scraping-sync
+git clone https://github.com/geektan123/currency.git
+cd currency
+git checkout main
+
 ```
 
 

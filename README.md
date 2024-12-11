@@ -1,4 +1,4 @@
-# Task 1
+# Task 2
 This project provides a RESTful API for fetching historical financial data using Yahoo Finance as the data source. The API is built with Spring Boot and uses JSoup for web scraping.
 ##### `Sub-task-1`
 ### GET `/api/scrape`

@@ -6,6 +6,21 @@ This endpoint takes in a few query parameters as follows:
 from: This will be the from currency code (e.g., GBP, AED).
 to: This will be the to currency code (e.g., INR).
 period: This will be the timeframe for which you want to query data (e.g., 1M, 3M - 1M indicates you are querying exchange data from the last one month).
+### POST `/api/scrape`
+This endpoint takes in a few query parameters as follows:
+from: This will be the from currency code (e.g., GBP, AED).
+to: This will be the to currency code (e.g., INR).
+period: This will be the timeframe for which you want to query data (e.g., 1M, 3M - 1M indicates you are querying exchange data from the last one month).
+#### Query Parameters:
+- `quote` (String): The stock symbol or currency pair (e.g., `AAPL`, `GBPAED=X`).
+- `fromDate` (String): The start date in `yyyy-MM-dd` format.
+- `toDate` (String): The end date in `yyyy-MM-dd` format.
+- {
+    "quote": "AAPL",
+    "fromDate": "2022-01-01",
+    "toDate": "2022-12-31"
+}
+
 
 ## Features
 - Fetch historical financial data for a given stock symbol or currency pair.

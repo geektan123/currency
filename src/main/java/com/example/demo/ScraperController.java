@@ -2,123 +2,66 @@ package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/scraper")
 public class ScraperController {
 
     @Autowired
-    private ScraperService scraperService;
+    private ScraperScheduler scraperScheduler;
 
     /**
-     * Endpoint to trigger scraping manually for any currency pair.
+     * Endpoint to get the last 7 days of historical data for the quotes.
      *
-     * @param quote    The currency pair, e.g., "GBP-INR".
-     * @param fromDate The start date as a Unix timestamp.
-     * @param toDate   The end date as a Unix timestamp.
-     * @return List of HistoricalData records.
+     * @return A map containing the historical data for both quotes.
      */
-    @GetMapping("/scrape")
-    public List<HistoricalData> scrapeData(
-            @RequestParam String quote,
-            @RequestParam String fromDate,
-            @RequestParam String toDate) {
-        try {
-            return scraperService.scrapeData(quote, fromDate, toDate);
-        } catch (IOException e) {
-            throw new RuntimeException("Error fetching data for " + quote + " from " + fromDate + " to " + toDate, e);
-        }
+    @GetMapping("/7days")
+    public Map<String, List<HistoricalData>> get7DaysData() {
+        return scraperScheduler.scrape7DaysData();
     }
 
     /**
-     * Helper method to scrape data for a given currency pair and a time range.
+     * Endpoint to get the last 1 week of historical data for the quotes.
      *
-     * @param quote    The currency pair, e.g., "GBP-INR".
-     * @param timeRange The time range in days (e.g., 7 for last week, 30 for last month).
-     * @return List of HistoricalData records.
+     * @return A map containing the historical data for both quotes.
      */
-    private List<HistoricalData> scrapeForTimeRange(String quote, long timeRangeInDays) throws IOException {
-        long now = System.currentTimeMillis() / 1000;
-        long startTime = now - timeRangeInDays * 24 * 60 * 60;
-        return scraperService.scrapeData(quote, String.valueOf(startTime), String.valueOf(now));
+    @GetMapping("/1week")
+    public Map<String, List<HistoricalData>> get1WeekData() {
+        return scraperScheduler.scrape1WeekData();
     }
 
     /**
-     * Endpoint to scrape data for the last 1 week.
+     * Endpoint to get the last 1 month of historical data for the quotes.
      *
-     * @param quote The currency pair, e.g., "GBP-INR".
-     * @return List of HistoricalData records.
+     * @return A map containing the historical data for both quotes.
      */
-    @GetMapping("/scrape/1W")
-    public List<HistoricalData> scrape1WData(@RequestParam String quote) {
-        try {
-            return scrapeForTimeRange(quote, 7); // 7 days for 1 week
-        } catch (IOException e) {
-            throw new RuntimeException("Error fetching data for " + quote + " for the last week", e);
-        }
+    @GetMapping("/1month")
+    public Map<String, List<HistoricalData>> get1MonthData() {
+        return scraperScheduler.scrape1MonthData();
     }
 
     /**
-     * Endpoint to scrape data for the last 1 month.
+     * Endpoint to get the last 6 months of historical data for the quotes.
      *
-     * @param quote The currency pair, e.g., "GBP-INR".
-     * @return List of HistoricalData records.
+     * @return A map containing the historical data for both quotes.
      */
-    @GetMapping("/scrape/1M")
-    public List<HistoricalData> scrape1MData(@RequestParam String quote) {
-        try {
-            return scrapeForTimeRange(quote, 30); // 30 days for 1 month
-        } catch (IOException e) {
-            throw new RuntimeException("Error fetching data for " + quote + " for the last 1 month", e);
-        }
+    @GetMapping("/6months")
+    public Map<String, List<HistoricalData>> get6MonthsData() {
+        return scraperScheduler.scrape6MonthsData();
     }
 
     /**
-     * Endpoint to scrape data for the last 3 months.
+     * Endpoint to get the last 1 year of historical data for the quotes.
      *
-     * @param quote The currency pair, e.g., "GBP-INR".
-     * @return List of HistoricalData records.
+     * @return A map containing the historical data for both quotes.
      */
-    @GetMapping("/scrape/3M")
-    public List<HistoricalData> scrape3MData(@RequestParam String quote) {
-        try {
-            return scrapeForTimeRange(quote, 90); // 90 days for 3 months
-        } catch (IOException e) {
-            throw new RuntimeException("Error fetching data for " + quote + " for the last 3 months", e);
-        }
-    }
-
-    /**
-     * Endpoint to scrape data for the last 6 months.
-     *
-     * @param quote The currency pair, e.g., "GBP-INR".
-     * @return List of HistoricalData records.
-     */
-    @GetMapping("/scrape/6M")
-    public List<HistoricalData> scrape6MData(@RequestParam String quote) {
-        try {
-            return scrapeForTimeRange(quote, 180); // 180 days for 6 months
-        } catch (IOException e) {
-            throw new RuntimeException("Error fetching data for " + quote + " for the last 6 months", e);
-        }
-    }
-
-    /**
-     * Endpoint to scrape data for the last 1 year.
-     *
-     * @param quote The currency pair, e.g., "GBP-INR".
-     * @return List of HistoricalData records.
-     */
-    @GetMapping("/scrape/1Y")
-    public List<HistoricalData> scrape1YData(@RequestParam String quote) {
-        try {
-            return scrapeForTimeRange(quote, 365); // 365 days for 1 year
-        } catch (IOException e) {
-            throw new RuntimeException("Error fetching data for " + quote + " for the last 1 year", e);
-        }
+    @GetMapping("/1year")
+    public Map<String, List<HistoricalData>> get1YearData() {
+        return scraperScheduler.scrape1YearData();
     }
 }

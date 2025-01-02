@@ -16,7 +16,6 @@ Before setting up and running the application, ensure that you have the followin
 
 - **Java 11 or above** installed
 - **Gradle** (or use Gradle Wrapper)
-- **MySQL** (for database storage if required)
 - **Firebase account** (for configuration management)
 - **Cron job service** (to schedule scraping if running locally)
 
@@ -140,28 +139,113 @@ To build and run the application locally, use the following command:
 
 This will start the Spring Boot application on **port 8080** by default.
 
-### 2. Test the Scraper API
 
-Once the application is running, you can test the scraper by navigating to:
+Here’s how you can structure the information you provided in a README file:
 
+---
+
+# API Endpoints
+
+## 2. Fetch Historical Data from Firebase
+**POST** `/api/scraper/scrapeData`
+
+This endpoint fetches historical data for a specific currency pair from Firebase based on the specified time duration.
+
+### Request Parameters:
+- **duration** (string): The time duration for data retrieval. Must be one of the following:
+  - `1W`: Last 7 days.
+  - `1M`: Last 1 month.
+  - `3M`: Last 3 months.
+  - `6M`: Last 6 months.
+  - `1Y`: Last 1 year.
+
+### Example Request:
+```bash
+POST http://localhost:8080/api/scraper/scrapeData?duration=1M
 ```
-http://localhost:8080/api/scraper/scrapeData?duration=1W
+
+### Example Response (for AEDINR - 1 Month):
+```json
+{
+  "historicalData": {
+    "AEDINR": {
+      "1Month": [
+        {
+          "adjClose": 23.295,
+          "close": 23.295,
+          "date": "Jan 2, 2025",
+          "high": 23.306,
+          "low": 23.274,
+          "open": 23.29,
+          "volume": 0
+        },
+        {
+          "adjClose": 23.3496,
+          "close": 23.3496,
+          "date": "Dec 31, 2024",
+          "high": 23.327,
+          "low": 23.2829,
+          "open": 23.2829,
+          "volume": 0
+        },
+        {
+          "adjClose": 23.2403,
+          "close": 23.2403,
+          "date": "Dec 30, 2024",
+          "high": 23.2963,
+          "low": 23.2427,
+          "open": 23.2427,
+          "volume": 0
+        }
+        ...
+      ]
+    }
+  }
+}
 ```
 
-This will trigger the scraper to fetch data for the last **1 week**. You can modify the `duration` parameter to one of the following values:
+### Success Response:
+- **Status**: 200 OK
+- **Body**: A JSON object containing the historical data for the specified duration.
 
-- **1W**: Last 1 week
-- **1M**: Last 1 month
-- **3M**: Last 3 months
-- **6M**: Last 6 months
-- **1Y**: Last 1 year
-
-Example:
-
+### Error Response:
+- **Status**: 400 Bad Request
+- **Body**: Error message indicating that the duration parameter is invalid.
+```json
+{
+  "message": "Invalid duration parameter. Use one of: 1W, 1M, 3M, 6M, 1Y."
+}
 ```
-http://localhost:8080/api/scraper/scrapeData?duration=1M
+
+---
+
+# How to Run the Application
+
+## 1. Clone the repository
+```bash
+git clone https://github.com/your-username/your-repository.git
+cd your-repository
 ```
 
+## 2. Install Dependencies
+Ensure you have **Java 11** or higher installed on your system. The project uses Spring Boot and does not rely on dependency management tools like Gradle or Maven.
+
+## 3. Run the Application
+You can run the Spring Boot application directly by navigating to the project directory and running:
+
+```bash
+java -jar target/your-app.jar
+```
+
+## 4. Firebase Configuration
+Ensure that you have a Firebase project set up. Configure the Firebase Admin SDK key in the `application.properties` or `application.yml` file, or initialize it programmatically in your project.
+
+## 5. Testing the API
+You can use **Postman** or any API testing tool to test the `/api/scraper/scrapeData` endpoint.
+
+---
+
+This structure provides clarity and ensures easy navigation for developers using the API. Let me know if you need further refinements!
 ### 3. Scheduling the Scraper with Cron Jobs
 
 The cron job service for periodic scraping is **paid** and not hosted here. However, you can set up the scraper to run periodically by using a **local cron job** or a task scheduler on your machine.
@@ -209,9 +293,6 @@ If you would like to contribute to this project, please fork the repository and 
 
 ---
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

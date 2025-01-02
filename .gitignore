@@ -16,7 +16,7 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
+!**/home/tanay/IdeaProjects/currency/src/main/java/com/example/demo/vance-69da4-firebase-adminsdk-4dm9q-a499d575b5.json/
 ### IntelliJ IDEA ###
 .idea
 *.iws

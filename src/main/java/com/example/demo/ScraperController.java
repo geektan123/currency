@@ -2,9 +2,12 @@ package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/scraper")
@@ -14,52 +17,50 @@ public class ScraperController {
     private ScraperScheduler scraperScheduler;
 
     /**
-     * Endpoint to manually trigger scraping for the last 7 days.
+     * Fetch data from Firebase based on the specified duration.
      *
-     * @return ResponseEntity with a success message.
+     * @param duration The time duration for data retrieval (1W, 1M, 3M, 6M, 1Y).
+     * @return ResponseEntity with the fetched data or error message.
      */
-    @GetMapping("/scrape7DaysData")
-    public ResponseEntity<String> scrape7DaysData() {
-        scraperScheduler.scrape7DaysData();
-        return ResponseEntity.ok("7 days data scraping triggered successfully.");
-    }
+    @PostMapping("/scrapeData")
+    public ResponseEntity<Object> fetchData(@RequestParam String duration) {
+        String rangePath;
 
-    /**
-     * Endpoint to manually trigger scraping for the last 1 week.
-     *
-     * @return ResponseEntity with a success message.
-     */
+        // Map duration to Firebase range path
+        switch (duration.toUpperCase()) {
+            case "1W":
 
-    /**
-     * Endpoint to manually trigger scraping for the last 1 month.
-     *
-     * @return ResponseEntity with a success message.
-     */
-    @GetMapping("/scrape1MonthData")
-    public ResponseEntity<String> scrape1MonthData() {
-        scraperScheduler.scrape1MonthData();
-        return ResponseEntity.ok("1 month data scraping triggered successfully.");
-    }
+                rangePath = "7Days";
+                break;
+            case "1M":
 
-    /**
-     * Endpoint to manually trigger scraping for the last 6 months.
-     *
-     * @return ResponseEntity with a success message.
-     */
-    @GetMapping("/scrape6MonthsData")
-    public ResponseEntity<String> scrape6MonthsData() {
-        scraperScheduler.scrape6MonthsData();
-        return ResponseEntity.ok("6 months data scraping triggered successfully.");
-    }
+                rangePath = "1Month";
+                break;
+            case "3M":
 
-    /**
-     * Endpoint to manually trigger scraping for the last 1 year.
-     *
-     * @return ResponseEntity with a success message.
-     */
-    @GetMapping("/scrape1YearData")
-    public ResponseEntity<String> scrape1YearData() {
-        scraperScheduler.scrape1YearData();
-        return ResponseEntity.ok("1 year data scraping triggered successfully.");
+                rangePath = "3Month";
+                break;
+            case "6M":
+
+                rangePath = "6Months";
+                break;
+            case "1Y":
+
+                rangePath = "1Year";
+                break;
+            default:
+                return ResponseEntity.badRequest().body("Invalid duration parameter. Use one of: 1W, 1M, 3M, 6M, 1Y.");
+        }
+
+        // Fetch data from Firebase
+        try {
+            List<HistoricalData> data = scraperScheduler.fetchDataFromFirebase(rangePath);
+            if (data.isEmpty()) {
+                return ResponseEntity.ok("No data found for the requested duration: " + duration);
+            }
+            return ResponseEntity.ok(data);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching data from Firebase: " + e.getMessage());
+        }
     }
 }

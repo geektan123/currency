@@ -1,7 +1,6 @@
 package com.example.demo;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class ScraperScheduler {
@@ -46,7 +48,11 @@ public class ScraperScheduler {
     public void scrape1MonthData() {
         scrapeDataForRange(30, "1Month");
     }
+    @Scheduled(cron = "0 0 0 * * ?") // Runs daily at midnight
+    public void scrape3MonthsData() {
+            scrapeDataForRange(90, "3Month");
 
+        }
     // Scheduled to run on the 1st day of every 6th month (UTC)
     @Scheduled(cron = "0 0 0 * * ?") // Runs daily at midnight
     public void scrape6MonthsData() {
@@ -89,5 +95,33 @@ public class ScraperScheduler {
 
     private long calculatePastTimestamp(int daysAgo) {
         return Instant.now().getEpochSecond() - daysAgo * 24L * 60 * 60;
+    }
+
+
+    public List<HistoricalData> fetchDataFromFirebase(String range) throws Exception {
+        String path = quote + "/" + range; // Adjust if needed for quote1
+        CompletableFuture<List<HistoricalData>> futureData = new CompletableFuture<>();
+
+        databaseReference.child(path).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<HistoricalData> dataList = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    HistoricalData data = snapshot.getValue(HistoricalData.class);
+                    if (data != null) {
+                        dataList.add(data);
+                    }
+                }
+                futureData.complete(dataList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                futureData.completeExceptionally(new Exception("Error fetching data from Firebase: " + databaseError.getMessage()));
+            }
+        });
+
+        // Wait for the asynchronous operation to complete
+        return futureData.get(); // Use timeout or default handling as needed
     }
 }

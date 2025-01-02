@@ -17,8 +17,7 @@ public class FirebaseConfig {
     @PostConstruct
     public void initializeFirebase() throws IOException {
         FileInputStream serviceAccount =
-                new FileInputStream("src/main/java/com/example/demo/vance-69da4-firebase-adminsdk-4dm9q-d0ffac4b68.json");
-
+                new FileInputStream("src/main/java/com/example/demo/vance-69da4-firebase-adminsdk-4dm9q-a499d575b5.json");
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                 .setDatabaseUrl("https://vance-69da4-default-rtdb.asia-southeast1.firebasedatabase.app")

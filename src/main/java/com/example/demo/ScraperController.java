@@ -1,67 +1,65 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Map;
-
 @RestController
-@RequestMapping("/scraper")
+@RequestMapping("/api/scraper")
 public class ScraperController {
 
     @Autowired
     private ScraperScheduler scraperScheduler;
 
     /**
-     * Endpoint to get the last 7 days of historical data for the quotes.
+     * Endpoint to manually trigger scraping for the last 7 days.
      *
-     * @return A map containing the historical data for both quotes.
+     * @return ResponseEntity with a success message.
      */
-    @GetMapping("/7days")
-    public Map<String, List<HistoricalData>> get7DaysData() {
-        return scraperScheduler.scrape7DaysData();
+    @GetMapping("/scrape7DaysData")
+    public ResponseEntity<String> scrape7DaysData() {
+        scraperScheduler.scrape7DaysData();
+        return ResponseEntity.ok("7 days data scraping triggered successfully.");
     }
 
     /**
-     * Endpoint to get the last 1 week of historical data for the quotes.
+     * Endpoint to manually trigger scraping for the last 1 week.
      *
-     * @return A map containing the historical data for both quotes.
+     * @return ResponseEntity with a success message.
      */
-    @GetMapping("/1week")
-    public Map<String, List<HistoricalData>> get1WeekData() {
-        return scraperScheduler.scrape1WeekData();
+
+    /**
+     * Endpoint to manually trigger scraping for the last 1 month.
+     *
+     * @return ResponseEntity with a success message.
+     */
+    @GetMapping("/scrape1MonthData")
+    public ResponseEntity<String> scrape1MonthData() {
+        scraperScheduler.scrape1MonthData();
+        return ResponseEntity.ok("1 month data scraping triggered successfully.");
     }
 
     /**
-     * Endpoint to get the last 1 month of historical data for the quotes.
+     * Endpoint to manually trigger scraping for the last 6 months.
      *
-     * @return A map containing the historical data for both quotes.
+     * @return ResponseEntity with a success message.
      */
-    @GetMapping("/1month")
-    public Map<String, List<HistoricalData>> get1MonthData() {
-        return scraperScheduler.scrape1MonthData();
+    @GetMapping("/scrape6MonthsData")
+    public ResponseEntity<String> scrape6MonthsData() {
+        scraperScheduler.scrape6MonthsData();
+        return ResponseEntity.ok("6 months data scraping triggered successfully.");
     }
 
     /**
-     * Endpoint to get the last 6 months of historical data for the quotes.
+     * Endpoint to manually trigger scraping for the last 1 year.
      *
-     * @return A map containing the historical data for both quotes.
+     * @return ResponseEntity with a success message.
      */
-    @GetMapping("/6months")
-    public Map<String, List<HistoricalData>> get6MonthsData() {
-        return scraperScheduler.scrape6MonthsData();
-    }
-
-    /**
-     * Endpoint to get the last 1 year of historical data for the quotes.
-     *
-     * @return A map containing the historical data for both quotes.
-     */
-    @GetMapping("/1year")
-    public Map<String, List<HistoricalData>> get1YearData() {
-        return scraperScheduler.scrape1YearData();
+    @GetMapping("/scrape1YearData")
+    public ResponseEntity<String> scrape1YearData() {
+        scraperScheduler.scrape1YearData();
+        return ResponseEntity.ok("1 year data scraping triggered successfully.");
     }
 }
